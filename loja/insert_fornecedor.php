@@ -16,21 +16,28 @@ try{
 try{
     $pdo = getConnection();
     extract ($_POST);
+
      if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
     die("E-mail invalido.");
 }
-    $cpf = preg_replace('/[^0-9]/', '', $cpf);
-    if (strlen($cpf) != 11) {
-    die("O CPF deve ter 11 numeros.");
-    }
-    $sql = "INSERT INTO usuario (nome, email, cpf) VALUES (:n, :e, :c)";
+    $cnpj = preg_replace('/[^0-9]/', '', $cnpj);
+    if (strlen($cnpj) != 14) {
+    die("O CNPJ deve ter 14 numeros.");
+}
+    $telefone = preg_replace('/[^0-9]/', '', $telefone);
+    if (strlen($telefone) != 10 && strlen($telefone) != 11) {
+    die("O telefone deve ter 10 ou 11 numeros.");
+}
+    $sql = "INSERT INTO fornecedor (nome, email, cnpj, telefone) VALUES (:n, :e, :c, :t)";
     $stmt = $pdo->prepare($sql);
+
     $stmt->execute([
     ":n" => $nome,
     ":e" => $email,
-    ":c" => $cpf
+    ":c" => $cnpj,
+    ":t" => $telefone,
 ]);
-    echo "Usuario inserido com ID " . $pdo->lastInsertId();
+    echo "Fornecedor inserido com ID " . $pdo->lastInsertId();
 }
     catch (PDOException $e){
     echo "Erro no banco de dados: " . $e->getMessage();
